@@ -49,35 +49,74 @@ async function getTweets() {
 
   showTweets(data);
 }
-
+// let newTweet;
+// const currentDate = new Date();
+// let formattedDate = currentDate.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 
 const showTweets = async (tweets) => {
   tweets.forEach((tweet) => {
 
     const template = `
-      <div class="tweet">
-        <div class="tweet_header">
-        <img src=${tweet.user?.avatar_url ? tweet.user.avatar_url : "https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg"} alt="${tweet.user.name}" />
-      <h3>${tweet.user?.name?tweet.user.name:"Aghil P Wilson"}</h3>
-      <p>@${tweet.user?.username}</p>
-        </div>
-        <div class="each_tweet_body">
-          <p>${tweet.text}</p>
-         <img src="${tweet.text_img}" alt="${tweet.user.name}" class = "tweet_text_img" />
-        </div>
-        <div class="tweet_footer">
-          <p>${tweet.created_at}</p>
-          <p>${tweet.retweet_count} Retweets</p>
-          <p>${tweet.view_count} views</p>
-          <p>${tweet.favorite_count} Likes</p>
-        </div>
-      </div>
+    <div class="tweet">
+    <div class="tweet_header">
+    <img src=${tweet.user.avatar_url} alt=${tweet.user.name} />
+      <h3>${tweet.user.name}</h3>
+      <p>@${tweet.user.username}</p>
+    </div>
+    <div class="tweet_body">
+      <p>${tweet.text}</p>
+     <img src="${tweet.text_img}" alt="${tweet.user.name}" />
+    </div>
+    <div class="tweet_footer">
+      <p>${tweet.created_at}</p>
+      <p>${tweet.retweet_count} Retweets</p>
+      <p>${tweet.view_count} views</p>
+      <p>${tweet.favorite_count} Likes</p>
+    </div>
     `;
     tweetsContainer.innerHTML += template;
   })
 
 }
+const newTweets = (tweet) => {
+  const template = `
+  <div class="tweet darkbody">
+  <div class="tweet_header">
+  <img src=${tweet.user.avatar_url} alt=${tweet.user.name} />
+    <h3>${tweet.user.name}</h3>
+    <p>@${tweet.user.username}</p>
+  </div>
+  <div class="tweet_body">
+    <p>${tweet.text}</p>
+   <img src="${tweet.text_img}" alt="${tweet.user.name}" />
+  </div>
+  <div class="tweet_footer">
+    <p>${tweet.created_at}</p>
+    <p>${tweet.retweet_count} Retweets</p>
+    <p>${tweet.view_count} views</p>
+    <p>${tweet.favorite_count} Likes</p>
+  </div>
+  
+  `;
+  //tweetsContainer.innerHTML = template + tweetsContainer.innerHTML;
+    tweetsContainer.insertAdjacentHTML('afterbegin', template);
+
+}
+
+// async function deleteTweets(id) {
+//   try {
+//     const response = await fetch(`https://tweets-api.onrender.com/tweets/${id}`, {
+//       method: "DELETE"
+//     });
+//     if (response.ok) {
+//       console.log(`${num} tweets deleted successfully`);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+// deleteTweets(16) 
 
 // *********************************************for infinite scroll*********************************************
 
@@ -97,46 +136,34 @@ window.addEventListener('scroll', () => {
 })
 
 
+
 tweetPostBtn.addEventListener("click", async (e) => {
+
   const currentDate = new Date();
   let formattedDate = currentDate.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  // Send the POST request to the API
+
   try {
     const response = await fetch("https://tweets-api.onrender.com/tweets", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ text: tweetPostText.value, user: { name: "Aghil P Wilson", username: "aghil_wilson", avatar_url: "https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg" } })
+      body: JSON.stringify({ 
+        user: { name: "Aghil P Wilson", username: "aghil_wilson", avatar_url: "https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg" },
+        created_at: formattedDate,
+        text: tweetPostText.value,
+        text_img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Twitter-logo.svg/100px-Twitter-logo.svg.png",
+        view_count: Math.floor(Math.random() * 100),
+        retweet_count: Math.floor(Math.random() * 100),
+        favorite_count: Math.floor(Math.random() * 100)
+      })
     });
     const newTweet = await response.json();
-    console.log(newTweet);
+    newTweets(newTweet);
   } catch (err) {
     console.error(err);
   }
 
-  // Update the UI to show the new tweet
-  const template = `
-  <div class="tweet">
-  <div class="tweet_header">
-  <img src="https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg" alt="Aghil" />
-    <h3>Aghil P Wilson</h3>
-    <p>aghil_wilson</p>
-  </div>
-  <div class="each_tweet_body">
-    <p>${tweetPostText.value}</p>
-  
-  </div>
-  <div class="tweet_footer">
-    <p>${formattedDate}</p>
-    <p>${Math.floor(Math.random() * 14) + 1} Retweets</p>
-    <p>${Math.floor(Math.random() * 140) + 1} views</p>
-    <p>${Math.floor(Math.random() * 250) + 1}
-    </div>
- </div>
-  `;
-  tweetsContainer.insertAdjacentHTML('afterbegin', template);
-  tweetPostText.value = "";
 })
 
 
@@ -144,7 +171,7 @@ tweetPostBtn.addEventListener("click", async (e) => {
 
 
 window.addEventListener("DOMContentLoaded", () => getTweets())
-//window.addEventListener("DOMContentLoaded", () => loading())
+
 
 
 
