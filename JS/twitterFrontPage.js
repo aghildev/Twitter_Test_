@@ -15,7 +15,7 @@ const rightSearchContainer = document.querySelector(".search_container");
 const rightHappening = document.querySelector(".rightside_happening");
 const rightFollow = document.querySelector(".rightside_follow");
 const midBodyHeader = document.querySelector(".mid_header");
-
+const forDark = document.querySelector(".tweet")
 const loader = document.getElementById("loader")
 
 const tweetsContainer = document.querySelector("#tweet_body");
@@ -31,7 +31,7 @@ function loading() {
 function complete() {
   tweetsContainer.hidden = false;
   loader.hidden = true;
-  
+
 }
 
 let data;
@@ -39,7 +39,7 @@ let data;
 async function getTweets() {
   //
   try {
- 
+
     const response = await fetch("https://tweets-api.onrender.com/tweets");
     data = await response.json();
     console.log(data);
@@ -58,9 +58,9 @@ const showTweets = async (tweets) => {
     const template = `
       <div class="tweet">
         <div class="tweet_header">
-        <img src="${tweet.user.avatar_url}" alt="${tweet.user.name}" />
-          <h3>${tweet.user.name}</h3>
-          <p>@${tweet.user.username}</p>
+        <img src=${tweet.user?.avatar_url ? tweet.user.avatar_url : "https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg"} alt="${tweet.user.name}" />
+      <h3>${tweet.user?.name?tweet.user.name:"Aghil P Wilson"}</h3>
+      <p>@${tweet.user?.username}</p>
         </div>
         <div class="each_tweet_body">
           <p>${tweet.text}</p>
@@ -91,10 +91,67 @@ window.addEventListener('scroll', () => {
   // console.log(scrollTop, scrollHeight, clientHeight);
 
   if ((scrollTop + clientHeight) >= (scrollHeight - 20)) {
-   
+
     getTweets();
   }
 })
+
+
+tweetPostBtn.addEventListener("click", async (e) => {
+  const currentDate = new Date();
+  let formattedDate = currentDate.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  // Send the POST request to the API
+  try {
+    const response = await fetch("https://tweets-api.onrender.com/tweets", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ text: tweetPostText.value, user: { name: "Aghil P Wilson", username: "aghil_wilson", avatar_url: "https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg" } })
+    });
+    const newTweet = await response.json();
+    console.log(newTweet);
+  } catch (err) {
+    console.error(err);
+  }
+
+  // Update the UI to show the new tweet
+  const template = `
+  <div class="tweet">
+  <div class="tweet_header">
+  <img src="https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg" alt="Aghil" />
+    <h3>Aghil P Wilson</h3>
+    <p>aghil_wilson</p>
+  </div>
+  <div class="each_tweet_body">
+    <p>${tweetPostText.value}</p>
+  
+  </div>
+  <div class="tweet_footer">
+    <p>${formattedDate}</p>
+    <p>${Math.floor(Math.random() * 14) + 1} Retweets</p>
+    <p>${Math.floor(Math.random() * 140) + 1} views</p>
+    <p>${Math.floor(Math.random() * 250) + 1}
+    </div>
+ </div>
+  `;
+  tweetsContainer.insertAdjacentHTML('afterbegin', template);
+  tweetPostText.value = "";
+})
+
+
+
+
+
+window.addEventListener("DOMContentLoaded", () => getTweets())
+//window.addEventListener("DOMContentLoaded", () => loading())
+
+
+
+
+
+
+
 
 //***************************************************************************************************************/
 
@@ -146,38 +203,3 @@ moreContainer.addEventListener("click", (e) => {
 })
 
 // ************************************************************************************************************
-
-tweetPostBtn.addEventListener("click", (e) => {
-
-  const currentDate = new Date();
-  let formattedDate = currentDate.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-  const template = `
-      <div class="tweet">
-        <div class="tweet-header">
-        <img src="https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg" alt="aghil" />
-          <h3>Aghil P Wilson</h3>
-          <p>aghil_wilson</p>
-        </div>
-        <div class="tweet-body">
-          <p>${tweetPostText.value}</p>
-         
-        </div>
-        <div class="tweet-footer">
-          <p>${formattedDate}</p>
-          <p>5 Retweets</p>
-        </div>
-      </div>
-    `;
-
-  tweetsContainer.insertAdjacentHTML('afterbegin', template);
-  tweetPostText.value = ""
-})
-
-
-
-
-
-
-window.addEventListener("DOMContentLoaded", () => getTweets())
-//window.addEventListener("DOMContentLoaded", () => loading())
