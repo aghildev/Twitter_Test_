@@ -66,6 +66,8 @@ labelChange.addEventListener("click", () => {
   rightFollow.classList.toggle("dark");
   midBodyHeader.classList.toggle("dark");
   tweetPostText.classList.toggle("dark");
+  //  midContainer.style.border = "1px solid black";
+  // rightSearchContainer.style.border="1px solid black";
 });
 moreContainer.addEventListener("click", (e) => {
   e.stopPropagation();
