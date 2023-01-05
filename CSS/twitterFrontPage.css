@@ -5,6 +5,7 @@
     text-decoration: none;
     list-style: none;
     font-family: sans-serif;    
+    font-weight: bold;
 }
 
 :root {
@@ -101,7 +102,7 @@
 .profile_pic {
     width: 45px;
     height: 45px;
-    object-fit: cover;
+    /* object-fit: cover; */
     border-radius: 50px;
 }
 
@@ -458,3 +459,12 @@
         width: 100%;
     }
 }
+
+
+
+/* New */
+
+.dark .tweet {
+    color: #fff; 
+    background-color: #000; 
+  }

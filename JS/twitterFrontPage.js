@@ -22,164 +22,6 @@ const tweetsContainer = document.querySelector("#tweet_body");
 const tweetPostBtn = document.querySelector(".tweet_post_btn");
 
 
-//Show loading
-function loading() {
-  loader.hidden = false;
-  tweetsContainer.hidden = true;
-}
-//Hide Loading
-function complete() {
-  tweetsContainer.hidden = false;
-  loader.hidden = true;
-
-}
-
-let data;
-
-async function getTweets() {
-  //
-  try {
-
-    const response = await fetch("https://tweets-api.onrender.com/tweets");
-    data = await response.json();
-    console.log(data);
-  } catch (err) {
-    console.log(err);
-  }
-
-  showTweets(data);
-}
-// let newTweet;
-// const currentDate = new Date();
-// let formattedDate = currentDate.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-
-const showTweets = async (tweets) => {
-  tweets.forEach((tweet) => {
-
-    const template = `
-    <div class="tweet">
-    <div class="tweet_header">
-    <img src=${tweet.user.avatar_url} alt=${tweet.user.name} />
-      <h3>${tweet.user.name}</h3>
-      <p>@${tweet.user.username}</p>
-    </div>
-    <div class="tweet_body">
-      <p>${tweet.text}</p>
-     <img src="${tweet.text_img}" alt="${tweet.user.name}" />
-    </div>
-    <div class="tweet_footer">
-      <p>${tweet.created_at}</p>
-      <p>${tweet.retweet_count} Retweets</p>
-      <p>${tweet.view_count} views</p>
-      <p>${tweet.favorite_count} Likes</p>
-    </div>
-    `;
-    tweetsContainer.innerHTML += template;
-  })
-
-}
-const newTweets = (tweet) => {
-  const template = `
-  <div class="tweet darkbody">
-  <div class="tweet_header">
-  <img src=${tweet.user.avatar_url} alt=${tweet.user.name} />
-    <h3>${tweet.user.name}</h3>
-    <p>@${tweet.user.username}</p>
-  </div>
-  <div class="tweet_body">
-    <p>${tweet.text}</p>
-   <img src="${tweet.text_img}" alt="${tweet.user.name}" />
-  </div>
-  <div class="tweet_footer">
-    <p>${tweet.created_at}</p>
-    <p>${tweet.retweet_count} Retweets</p>
-    <p>${tweet.view_count} views</p>
-    <p>${tweet.favorite_count} Likes</p>
-  </div>
-  
-  `;
-  //tweetsContainer.innerHTML = template + tweetsContainer.innerHTML;
-    tweetsContainer.insertAdjacentHTML('afterbegin', template);
-
-}
-
-// async function deleteTweets(id) {
-//   try {
-//     const response = await fetch(`https://tweets-api.onrender.com/tweets/${id}`, {
-//       method: "DELETE"
-//     });
-//     if (response.ok) {
-//       console.log(`${num} tweets deleted successfully`);
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
-// deleteTweets(16) 
-
-// *********************************************for infinite scroll*********************************************
-
-window.addEventListener('scroll', () => {
-  const {
-    scrollTop,
-    scrollHeight,
-    clientHeight
-  } = document.documentElement;
-
-  // console.log(scrollTop, scrollHeight, clientHeight);
-
-  if ((scrollTop + clientHeight) >= (scrollHeight - 20)) {
-
-    getTweets();
-  }
-})
-
-
-
-tweetPostBtn.addEventListener("click", async (e) => {
-
-  const currentDate = new Date();
-  let formattedDate = currentDate.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-  try {
-    const response = await fetch("https://tweets-api.onrender.com/tweets", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ 
-        user: { name: "Aghil P Wilson", username: "aghil_wilson", avatar_url: "https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg" },
-        created_at: formattedDate,
-        text: tweetPostText.value,
-        text_img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Twitter-logo.svg/100px-Twitter-logo.svg.png",
-        view_count: Math.floor(Math.random() * 100),
-        retweet_count: Math.floor(Math.random() * 100),
-        favorite_count: Math.floor(Math.random() * 100)
-      })
-    });
-    const newTweet = await response.json();
-    newTweets(newTweet);
-  } catch (err) {
-    console.error(err);
-  }
-
-})
-
-
-
-
-
-window.addEventListener("DOMContentLoaded", () => getTweets())
-
-
-
-
-
-
-
-
-
 //***************************************************************************************************************/
 
 tweetPostText.addEventListener("click", (e) => {
@@ -213,20 +55,184 @@ userProfile.addEventListener("click", (e) => {
   logoutDtetails.classList.add("display_flex");
 })
 
+
 labelChange.addEventListener("click", () => {
   labelChange.classList.toggle("active");
   body.classList.toggle("dark");
+  tweetsContainer.classList.toggle("dark");
   settingsContainer.style.color = "black";
   rightSearchContainer.classList.toggle("dark");
   rightHappening.classList.toggle("dark");
   rightFollow.classList.toggle("dark");
   midBodyHeader.classList.toggle("dark");
   tweetPostText.classList.toggle("dark");
-})
-
+});
 moreContainer.addEventListener("click", (e) => {
   e.stopPropagation();
   settingsContainer.classList.add("display_block");
 })
 
 // ************************************************************************************************************
+
+//Show loading
+function loading() {
+  loader.hidden = false;
+  tweetsContainer.hidden = true;
+}
+//Hide Loading
+function complete() {
+  tweetsContainer.hidden = false;
+  loader.hidden = true;
+
+}
+
+let data;
+
+async function getTweets() {
+  //
+  try {
+
+    const response = await fetch("https://tweets-api.onrender.com/tweets");
+    data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.log(err);
+  }
+
+  showTweets(data);
+}
+
+
+
+const showTweets = async (tweets) => {
+  tweets.forEach((tweet) => {
+
+    const template = `
+    <div class="tweet">
+    <div class="tweet_header">
+    <img src=${tweet.user.avatar_url} alt=${tweet.user.name} />
+      <h3>${tweet.user.name}</h3>
+      <p>@${tweet.user.username}</p>
+    </div>
+    <div class="tweet_body">
+      <p>${tweet.text}</p>
+     <img src="${tweet.text_img}" alt="${tweet.user.name}" />
+    </div>
+    <div class="tweet_footer">
+      <p>${tweet.created_at}</p>
+      <p>${tweet.retweet_count} Retweets</p>
+      <p>${tweet.view_count} views</p>
+      <p>${tweet.favorite_count} Likes</p>
+    </div>
+    `;
+    tweetsContainer.innerHTML += template;
+  })
+
+}
+const newTweets = (tweet) => {
+  const template = `
+  <div class="tweet">
+  <div class="tweet_header">
+  <img src=${tweet.user.avatar_url} alt=${tweet.user.name} />
+    <h3>${tweet.user.name}</h3>
+    <p>@${tweet.user.username}</p>
+  </div>
+  <div class="tweet_body">
+    <p>${tweet.text}</p>
+   <img src="${tweet.text_img}" alt="${tweet.user.name}" />
+  </div>
+  <div class="tweet_footer">
+    <p>${tweet.created_at}</p>
+    <p>${tweet.retweet_count} Retweets</p>
+    <p>${tweet.view_count} views</p>
+    <p>${tweet.favorite_count} Likes</p>
+  </div>
+  
+  `;
+ 
+    tweetsContainer.insertAdjacentHTML('afterbegin', template);
+
+}
+
+// *********************************************for infinite scroll*********************************************
+
+window.addEventListener('scroll', () => {
+  const {
+    scrollTop,
+    scrollHeight,
+    clientHeight
+  } = document.documentElement;
+  if ((scrollTop + clientHeight) >= (scrollHeight - 20)) {
+
+    getTweets();
+  }
+})
+
+
+
+tweetPostBtn.addEventListener("click", async (e) => {
+
+  const currentDate = new Date();
+  let formattedDate = currentDate.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+  try {
+    const response = await fetch("https://tweets-api.onrender.com/tweets", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ 
+        user: { name: "Aghil P Wilson", username: "aghil_wilson", avatar_url: "https://i.ibb.co/XxvNnM3/Whats-App-Image-2023-01-03-at-16-50-27.jpg" },
+        created_at: formattedDate,
+        text: tweetPostText.value,
+        text_img: "https://t3.ftcdn.net/jpg/03/20/88/34/360_F_320883488_PMmkQget359WtY6foB1xFN3Wcvus6WTM.jpg",
+        view_count: Math.floor(Math.random() * 100),
+        retweet_count: Math.floor(Math.random() * 100),
+        favorite_count: Math.floor(Math.random() * 100)
+      })
+    });
+    const newTweet = await response.json();
+    newTweets(newTweet);
+    tweetPostText.value = ""
+  } catch (err) {
+    console.error(err);
+  }
+
+})
+
+
+
+
+
+window.addEventListener("DOMContentLoaded", () => getTweets())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//************************************************************************************************************************** */
+//Delete 👀👀👀🧧🧧🎑🎑🎐
+// async function deleteTweets(id) {
+//   try {
+//     const response = await fetch(`https://tweets-api.onrender.com/tweets/${id}`, {
+//       method: "DELETE"
+//     });
+//     if (response.ok) {
+//       console.log(`${num} tweets deleted successfully`);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+// deleteTweets(17) 
+//Delete 👀👀👀🧧🧧🎑🎑🎐
+//***************************************************************************************************************************************** */
