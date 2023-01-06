@@ -56,6 +56,7 @@ userProfile.addEventListener("click", (e) => {
 })
 
 
+
 labelChange.addEventListener("click", () => {
   labelChange.classList.toggle("active");
   body.classList.toggle("dark");
@@ -66,9 +67,26 @@ labelChange.addEventListener("click", () => {
   rightFollow.classList.toggle("dark");
   midBodyHeader.classList.toggle("dark");
   tweetPostText.classList.toggle("dark");
-  //  midContainer.style.border = "1px solid black";
-  // rightSearchContainer.style.border="1px solid black";
+
+
+  if (labelChange.classList.contains("active")) {
+    localStorage.setItem("darkClass", "active");
+  } else {
+    localStorage.removeItem("darkClass");
+  }
 });
+if (localStorage.getItem("darkClass") == "active") {
+  labelChange.classList.add("active");
+  body.classList.add("dark");
+  tweetsContainer.classList.add("dark");
+  settingsContainer.style.color = "black";
+  rightSearchContainer.classList.toggle("dark");
+  rightHappening.classList.toggle("dark");
+  rightFollow.classList.toggle("dark");
+  midBodyHeader.classList.toggle("dark");
+  tweetPostText.classList.toggle("dark");
+  
+}
 moreContainer.addEventListener("click", (e) => {
   e.stopPropagation();
   settingsContainer.classList.add("display_block");
